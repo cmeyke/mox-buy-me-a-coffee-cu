@@ -49,5 +49,22 @@ def test_fund_and_withdraw(coffee, account):
     assert boa.env.get_balance(coffee.address) == 0
     assert boa.env.get_balance(account.address) - initial_balance == SEND_VALUE * 10
 
+def test_fund_default_and_withdraw(coffee, account):
+    # Arrange
+    for i in range(10):
+        funder = boa.env.generate_address(f"funder_{i}")
+        boa.env.set_balance(funder, SEND_VALUE)
+        with boa.env.prank(funder):
+            coffee.__default__(value=SEND_VALUE)
+            # boa.env.raw_call(to_address=coffee.address, value=SEND_VALUE)
+
+    # Act
+    initial_balance = boa.env.get_balance(account.address)
+    coffee.withdraw()
+
+    # Assert
+    assert boa.env.get_balance(coffee.address) == 0
+    assert boa.env.get_balance(account.address) - initial_balance == SEND_VALUE * 10
+
 def test_get_rate(coffee):
     assert coffee.get_eth_to_usd_rate(SEND_VALUE) > 0
