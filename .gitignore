@@ -14,3 +14,4 @@ wheels/
 out
 .deployments.db
 .coverage
+anvil-zksync.log
